@@ -3,6 +3,7 @@ package com.example.websocketdemo.config;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.*;
+import org.libelektra.*;
 
 /**
  * Created by rajeevkumarsingh on 24/07/17.
@@ -18,18 +19,28 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        registry.setApplicationDestinationPrefixes("/app");
-        registry.enableSimpleBroker("/topic");   // Enables a simple in-memory broker
 
+        Key key = Key.create("user");
+        try (KDB kdb = KDB.open(key)) {
+            KeySet set = KeySet.create();
+            Key namespace = Key.create("user/chatapp");
+            kdb.get(set, namespace);
 
-        //   Use this for enabling a Full featured broker like RabbitMQ
+            String applicationDestPrefix = set.lookup("user/chatapp/applicationDestPrefix").getString();
+            String StompBrokerRelay =   set.lookup("user/chatapp/broker/name").getString();
+            String relayHost = set.lookup("user/chatapp/broker/host").getString();
+            int relayPort = set.lookup("user/chatapp/broker/port").getInteger();
+            String login = set.lookup("user/chatapp/broker/login").getString();
+            String passcode = set.lookup("user/chatapp/broker/pw").getString();
 
-        /*
-        registry.enableStompBrokerRelay("/topic")
-                .setRelayHost("localhost")
-                .setRelayPort(61613)
-                .setClientLogin("guest")
-                .setClientPasscode("guest");
-        */
+            registry.setApplicationDestinationPrefixes(applicationDestPrefix);
+            registry.enableStompBrokerRelay(StompBrokerRelay)
+                    .setRelayHost(relayHost)
+                    .setRelayPort(relayPort)
+                    .setClientLogin(login)
+                    .setClientPasscode(passcode);
+        } catch (KDB.KDBException e) {
+            e.printStackTrace();
+        }
     }
 }
