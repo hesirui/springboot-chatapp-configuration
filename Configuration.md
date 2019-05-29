@@ -2,6 +2,7 @@
 
 Install docker
 pull and run the following image
+
 docker run -d --hostname my-rabbit --name rabbitmqSTOMP -p 15672:15672 -p 5672:5672 -p 61613:61613 itzg/rabbitmq-stomp
 
 The default credentials are guest, password: guest
