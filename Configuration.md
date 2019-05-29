@@ -15,10 +15,15 @@ Now rabbitmq is up and running at localhost:15672, you can verify by navigating 
 Now you can set the properties with kdb
 
 `kdb set user/chatapp/applicationDestPrefix`
+
 `Kdb set user/chatapp/broker/name`
+
 `Kdb set user/chatapp/broker/host`
+
 `Kdb set user/chatapp/broker/port`
+
 `Kdb set user/chatapp/broker/login`
+
 `Kdb set user/chatapp/broker/pw`
 
 `applicationDestPrefix specifies the app prefix in the broker it is usually, „/<any word>“ e.g. /app`
